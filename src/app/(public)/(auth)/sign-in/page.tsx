@@ -1,16 +1,41 @@
+"use client"
+
 import Link from "next/link";
 import {
   AuthCardHeading,
   AuthDivider,
   SocialAuthRow,
 } from "@/components/auth/ui";
-import SignInForm from "@/components/auth/SignInForm";
+import SignInForm, { SignInFormValues } from "@/components/auth/SignInForm";
+import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
-export const metadata = {
-  title: "Sign in — HireLoop",
-};
 
 export default function SignInPage() {
+   const router = useRouter();
+  const handleSignIn = async (userData:SignInFormValues ) => {
+    const { data, error } = await authClient.signIn.email({
+      email: userData.email, 
+      password: userData.password, 
+    });
+    if (data) {
+      console.log('login',data)
+      router.refresh();
+      toast.add({
+        type:'success',
+        description: `sucessfully created`
+      })
+    }
+    if(error){
+      toast.add({
+        type:'error',
+        description:`error: ${error.message}`
+      })
+    }
+
+  }
+
   return (
     <>
       <AuthCardHeading
@@ -29,7 +54,7 @@ export default function SignInPage() {
       />
 
       {/* TODO: wire up your auth provider (e.g. better-auth signIn) */}
-      <SignInForm />
+      <SignInForm handleSignIn={handleSignIn}/>
 
       <div className="mt-8">
         <AuthDivider />

@@ -4,22 +4,25 @@ import { AuthField, AuthSubmit } from "./ui"
 import { useForm } from "react-hook-form";
 
 
-type GetStartedFormValues = {
+export type SignInFormValues = {
     email: string;
     password: string;
-    remember:boolean;
+    remember: boolean;
 };
 
-const SignInForm = () => {
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<GetStartedFormValues>({
+interface ISignInProps {
+    handleSignIn: (userData: SignInFormValues) => Promise<void>
+}
+const SignInForm = ({ handleSignIn }: ISignInProps) => {
+    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInFormValues>({
         defaultValues: {
             email: "",
             password: "",
-            remember:false
+            remember: false
         },
     });
-    const onSubmit = async (data: GetStartedFormValues) => {
-        console.log(data)
+    const onSubmit = async (userData: SignInFormValues) => {
+        await handleSignIn(userData)
     }
     return (
         <form className="mt-8 flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
