@@ -15,13 +15,16 @@ import { toast } from "@/components/ui/toast";
 export default function GetStartedPage() {
   const router = useRouter();
   const handleSignUp = async (userData: GetStartedFormValues) => {
+    console.log(userData)
     const { data, error } = await authClient.signUp.email({
       name: userData.name, // required, The name of the user.
       email: userData.email, // required, The email address of the user.
       password: userData.password, // required, The password of the user. It should be at least 8 characters long and max 128 by default.
+      role: userData.role, // custom additional field, saved on the user record.
       callbackURL: "/get-started", // An optional URL to redirect to after the user signs up.
     });
     if (data) {
+      console.log(data)
       router.refresh();
       toast.add({
         type:'success',

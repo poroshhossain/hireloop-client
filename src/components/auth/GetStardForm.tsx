@@ -8,7 +8,7 @@ export type GetStartedFormValues = {
     name: string;
     email: string;
     password: string;
-    role: "job-seeker" | "employer";
+    role: "job-seeker" | "employer"; // only these can self-register; admins are provisioned server-side
 };
 interface IGetStardForm {
     handleSignUp: (userData: GetStartedFormValues) => Promise<void>
