@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+:root {
+  --primary: #5C53FE;
+  --dark: #000;
+  --dark-secoundary: #222222;
+  --light: #ffffff;
+  --border-color:#ddd;
+}
+
+@theme {
+  --color-primary-color: var(--primary);
+  --color-dark: var(--dark);
+  --color-dark-secoundary: var(--dark-secoundary);
+  --color-light: var(--light);
+  --color-border-color: var(--border-color);
+}
