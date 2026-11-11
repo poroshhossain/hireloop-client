@@ -57,9 +57,12 @@ export function SiteHeader() {
 
         {/* Desktop actions */}
         {session?.user ? <>
-          <div className="flex flex-col">
-            <span>{session?.user?.name.slice(0, 2).toUpperCase()}</span>
-            <span className="text-[10px]">{session?.user?.role}</span>
+          <div className="flex items-center gap-3">
+            <Link href={`/dashboard/${session?.user?.role}`}>Dashboard</Link>
+            <div className="flex flex-col">
+              <span>{session?.user?.name.slice(0, 2).toUpperCase()}</span>
+              <span className="text-[10px]">{session?.user?.role}</span>
+            </div>
           </div>
         </> : <>
           <div className="hidden items-center md:flex">
