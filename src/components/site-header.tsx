@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "cn";
 import Logo from "./sheard/Logo";
+import { authClient } from "@/lib/auth-client";
 
 const navLinks = [
   { href: "/jobs", label: "Browse Jobs" },
@@ -24,8 +25,9 @@ export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
-  const isActive = (href: string) =>
-    pathname === href || pathname.startsWith(`${href}/`);
+  const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+
+  const { data: session } = authClient.useSession();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border-color/5 bg-dark-secoundary">
@@ -54,18 +56,26 @@ export function SiteHeader() {
         </nav>
 
         {/* Desktop actions */}
-        <div className="hidden items-center md:flex">
-          <Link
-            href="/sign-in"
-            className="rounded-md px-3 py-2 text-sm font-semibold text-primary-color transition-[color] hover:brightness-125"
-          >
-            Sign In
-          </Link>
-          <span aria-hidden="true" className="mx-3 h-5 w-px bg-light/10" />
-          <Link href="/get-started" className={getStartedClasses}>
-            Get Started
-          </Link>
-        </div>
+        {session?.user ? <>
+          <div className="flex flex-col">
+            <span>{session?.user?.name.slice(0, 2).toUpperCase()}</span>
+            <span className="text-[10px]">{session?.user?.role}</span>
+          </div>
+        </> : <>
+          <div className="hidden items-center md:flex">
+            <Link
+              href="/sign-in"
+              className="rounded-md px-3 py-2 text-sm font-semibold text-primary-color transition-[color] hover:brightness-125"
+            >
+              Sign In
+            </Link>
+            <span aria-hidden="true" className="mx-3 h-5 w-px bg-light/10" />
+            <Link href="/get-started" className={getStartedClasses}>
+              Get Started
+            </Link>
+          </div>
+        </>}
+
 
         {/* Mobile toggle */}
         <button

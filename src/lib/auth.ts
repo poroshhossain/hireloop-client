@@ -12,9 +12,9 @@ export const auth = betterAuth({
     user: {
         additionalFields: {
             role: {
-                type: ["job-seeker", "employer", "admin"],
+                type: ["jobseeker", "employer", "admin"],
                 input: true, // clients can submit role at signUp
-                defaultValue: "job-seeker",
+                defaultValue: "jobseeker",
             }
         }
     },

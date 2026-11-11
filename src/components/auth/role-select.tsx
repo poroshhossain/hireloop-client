@@ -5,7 +5,7 @@ type GetStartedFormValues = {
   name: string;
   email: string;
   password: string;
-  role: "job-seeker" | "employer";
+  role: "jobseeker" | "employer";
 };
 
 interface AuthRoleSelectProps {
@@ -14,7 +14,7 @@ interface AuthRoleSelectProps {
 
 const roles = [
   {
-    value: "job-seeker",
+    value: "jobseeker",
     label: "Job Seeker",
     description: "Find roles, get AI-ranked matches and track applications.",
     icon: Users,

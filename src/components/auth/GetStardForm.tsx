@@ -8,7 +8,7 @@ export type GetStartedFormValues = {
     name: string;
     email: string;
     password: string;
-    role: "job-seeker" | "employer"; // only these can self-register; admins are provisioned server-side
+    role: "jobseeker" | "employer"; // only these can self-register; admins are provisioned server-side
 };
 interface IGetStardForm {
     handleSignUp: (userData: GetStartedFormValues) => Promise<void>
@@ -19,7 +19,7 @@ const GetStardForm = ({ handleSignUp }: IGetStardForm) => {
             name: "",
             email: "",
             password: "",
-            role: "job-seeker",
+            role: "jobseeker",
         },
     });
     const onSubmit = async (userData: GetStartedFormValues) => {
