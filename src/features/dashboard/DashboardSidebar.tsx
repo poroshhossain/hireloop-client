@@ -87,7 +87,7 @@ const sidebarsByRole: Record<Role, RoleSidebar> = {
     items: [
       { label: "Dashboard", href: roleHome.employer, icon: LayoutDashboard },
       { label: "My Company", href: "/dashboard/employer/company", icon: Building2 },
-      { label: "Manage Jobs", href: "/dashboard/employer/manage", icon: Briefcase },
+      { label: "Manage Jobs", href: "/dashboard/employer/jobs", icon: Briefcase },
       { label: "Applications", href: "/dashboard/employer/applications", icon: FileText },
       { label: "Settings", href: "/dashboard/employer/settings", icon: Settings },
     ],

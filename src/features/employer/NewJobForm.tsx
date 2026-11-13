@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
+import { Field, inputClass, textareaClass, FormSelect } from "@/features/dashboard/form-field";
 
 /* -------------------------------------------------------------------------- */
 /* Data                                                                       */
@@ -29,51 +30,6 @@ const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 const WORKPLACES = ["Remote", "On-site", "Hybrid"];
 
 const EXPERIENCE_LEVELS = ["Entry", "Mid", "Senior", "Lead"];
-
-/* -------------------------------------------------------------------------- */
-/* Fields (same spec as "HL 2.0/Inputs" — dark card + primary focus)           */
-/* -------------------------------------------------------------------------- */
-
-function Field({
-  label,
-  error,
-  className,
-  children,
-}: {
-  label: string;
-  error?: string;
-  className?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <label className={cn("block", className)}>
-      <span className="text-sm font-medium text-light/80">{label}</span>
-      {children}
-      {error && <span className="mt-1 block text-xs text-red-400">{error}</span>}
-    </label>
-  );
-}
-
-const controlClass = cn(
-  "mt-1.5 h-10 w-full rounded-lg border border-border-color/30 bg-dark-secoundary/60 px-3 text-sm text-light",
-  "outline-none transition-colors placeholder:text-light/35",
-  "focus:border-primary-color/60 focus:ring-3 focus:ring-primary-color/20",
-);
-
-const selectClass = cn(controlClass, "cursor-pointer appearance-none bg-[position:right_0.75rem_center] bg-no-repeat");
-
-function Select({ className, ...props }: React.ComponentProps<"select">) {
-  return (
-    <select
-      {...props}
-      className={cn(selectClass, className)}
-      style={{
-        backgroundImage:
-          "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23ffffff88' stroke-width='2.5' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E\")",
-      }}
-    />
-  );
-}
 
 /* -------------------------------------------------------------------------- */
 /* Form                                                                       */
@@ -120,7 +76,7 @@ const NewJobForm = () => {
             <input
               type="text"
               placeholder="e.g. Senior Product Designer"
-              className={controlClass}
+              className={inputClass}
               {...register("title", { required: "Job title is required" })}
             />
           </Field>
@@ -129,13 +85,13 @@ const NewJobForm = () => {
             <input
               type="text"
               placeholder="e.g. Nexus Lab"
-              className={controlClass}
+              className={inputClass}
               {...register("company", { required: "Company is required" })}
             />
           </Field>
 
           <Field label="Category" error={errors.category?.message}>
-            <Select
+            <FormSelect
               defaultValue=""
               {...register("category", { required: "Category is required" })}
             >
@@ -147,11 +103,11 @@ const NewJobForm = () => {
                   {category}
                 </option>
               ))}
-            </Select>
+            </FormSelect>
           </Field>
 
           <Field label="Job Type" error={errors.jobType?.message}>
-            <Select
+            <FormSelect
               defaultValue=""
               {...register("jobType", { required: "Job type is required" })}
             >
@@ -163,11 +119,11 @@ const NewJobForm = () => {
                   {type}
                 </option>
               ))}
-            </Select>
+            </FormSelect>
           </Field>
 
           <Field label="Workplace" error={errors.workplace?.message}>
-            <Select
+            <FormSelect
               defaultValue=""
               {...register("workplace", { required: "Workplace is required" })}
             >
@@ -179,14 +135,14 @@ const NewJobForm = () => {
                   {workplace}
                 </option>
               ))}
-            </Select>
+            </FormSelect>
           </Field>
 
           <Field label="Location" error={errors.location?.message}>
             <input
               type="text"
               placeholder="e.g. Dhaka, Bangladesh"
-              className={controlClass}
+              className={inputClass}
               {...register("location", { required: "Location is required" })}
             />
           </Field>
@@ -200,7 +156,7 @@ const NewJobForm = () => {
 
         <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           <Field label="Experience Level" error={errors.experienceLevel?.message}>
-            <Select
+            <FormSelect
               defaultValue=""
               {...register("experienceLevel", { required: "Experience level is required" })}
             >
@@ -212,7 +168,7 @@ const NewJobForm = () => {
                   {level}
                 </option>
               ))}
-            </Select>
+            </FormSelect>
           </Field>
 
           <Field label="Salary Min" error={errors.salaryMin?.message}>
@@ -220,7 +176,7 @@ const NewJobForm = () => {
               type="number"
               min={0}
               placeholder="0"
-              className={controlClass}
+              className={inputClass}
               {...register("salaryMin", { required: "Min salary is required" })}
             />
           </Field>
@@ -230,7 +186,7 @@ const NewJobForm = () => {
               type="number"
               min={0}
               placeholder="0"
-              className={controlClass}
+              className={inputClass}
               {...register("salaryMax", { required: "Max salary is required" })}
             />
           </Field>
@@ -246,7 +202,7 @@ const NewJobForm = () => {
           <Field label="Application Deadline" error={errors.deadline?.message}>
             <input
               type="date"
-              className={cn(controlClass, "cursor-pointer")}
+              className={inputClass}
               {...register("deadline", { required: "Deadline is required" })}
             />
           </Field>
@@ -255,7 +211,7 @@ const NewJobForm = () => {
             <textarea
               rows={5}
               placeholder="Describe responsibilities, requirements and benefits..."
-              className={cn(controlClass, "h-auto resize-y py-2.5 leading-relaxed")}
+              className={textareaClass}
               {...register("description", { required: "Description is required" })}
             />
           </Field>
@@ -264,7 +220,7 @@ const NewJobForm = () => {
             <input
               type="text"
               placeholder="Figma, Design System, Prototyping (comma separated)"
-              className={controlClass}
+              className={inputClass}
               {...register("skills", { required: "At least one skill is required" })}
             />
           </Field>
