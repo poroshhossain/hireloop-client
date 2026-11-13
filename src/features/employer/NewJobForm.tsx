@@ -1,9 +1,11 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Field, inputClass, textareaClass, FormSelect } from "@/features/dashboard/form-field";
 import { postJobApi } from "@/lib/api/getApi";
+import { toast } from "@/components/ui/toast";
 import { NewJobFormValues } from "@/type";
 
 /* -------------------------------------------------------------------------- */
@@ -47,11 +49,28 @@ const NewJobForm = () => {
     },
   });
 
+  const router = useRouter();
+
   const onSubmit = async (data: NewJobFormValues) => {
-    // getData → console
-    console.log("New Job form data:", data);
-    await postJobApi(data); // Call the API to post the job
+    try {
+      await postJobApi(data); // Call the API to post the job
+    } catch {
+      toast.add({
+        type: "error",
+        title: "Publish failed",
+        description: "Could not reach the jobs API. Please try again.",
+      });
+      return;
+    }
+
+
+    toast.add({
+      type: "success",
+      title: "Job published",
+      description: `“${data.title.trim()}” is now live and open for applications.`,
+    });
     reset();
+    router.push("/dashboard/employer/jobs");
   };
 
   return (
@@ -165,9 +184,18 @@ const NewJobForm = () => {
             <input
               type="number"
               min={0}
+              step={1000}
               placeholder="0"
               className={inputClass}
-              {...register("salaryMin", { required: "Min salary is required" })}
+              {...register("salaryMin", {
+                required: "Min salary is required",
+                validate: (value) => {
+                  const amount = Number(value);
+                  if (Number.isNaN(amount) || amount < 0) return "Enter a valid amount";
+                  if (amount > 10_000_000) return "Amount looks unrealistic";
+                  return true;
+                },
+              })}
             />
           </Field>
 
@@ -175,9 +203,19 @@ const NewJobForm = () => {
             <input
               type="number"
               min={0}
+              step={1000}
               placeholder="0"
               className={inputClass}
-              {...register("salaryMax", { required: "Max salary is required" })}
+              {...register("salaryMax", {
+                required: "Max salary is required",
+                validate: (value, formValues) => {
+                  const amount = Number(value);
+                  if (Number.isNaN(amount) || amount < 0) return "Enter a valid amount";
+                  if (Number(formValues.salaryMin) > amount)
+                    return "Max salary must be greater than the min salary";
+                  return true;
+                },
+              })}
             />
           </Field>
         </div>
@@ -192,8 +230,19 @@ const NewJobForm = () => {
           <Field label="Application Deadline" error={errors.deadline?.message}>
             <input
               type="date"
+              min={new Date().toISOString().slice(0, 10)}
               className={inputClass}
-              {...register("deadline", { required: "Deadline is required" })}
+              {...register("deadline", {
+                required: "Deadline is required",
+                validate: (value) => {
+                  const deadline = new Date(value);
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  if (Number.isNaN(deadline.getTime())) return "Enter a valid date";
+                  if (deadline < today) return "Deadline must be today or a future date";
+                  return true;
+                },
+              })}
             />
           </Field>
 
