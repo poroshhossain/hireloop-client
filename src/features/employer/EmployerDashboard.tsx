@@ -62,7 +62,7 @@ function RecentApplications() {
                 <span
                   className={cn(
                     "flex size-10 shrink-0 place-items-center rounded-full",
-                    "bg-gradient-to-br from-primary-color/40 to-primary-color/10",
+                    "bg-linear-to-br from-primary-color/40 to-primary-color/10",
                     "ring-1 ring-primary-color/25",
                     "text-xs font-bold text-light",
                   )}

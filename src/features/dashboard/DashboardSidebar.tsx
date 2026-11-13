@@ -171,7 +171,7 @@ function SidebarNav({
                         "data-active:bg-primary-color/10 data-active:text-light",
                       )}
                     >
-                      <Icon className="text-light/40 group-data-[active]/menu-button:text-primary-color" />
+                      <Icon className="text-light/40 group-data-active/menu-button:text-primary-color" />
                       <span>{label}</span>
                     </SidebarMenuButton>
                   </SidebarMenuItem>

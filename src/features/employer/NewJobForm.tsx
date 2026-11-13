@@ -3,25 +3,14 @@
 import { useForm } from "react-hook-form";
 import { cn } from "@/lib/utils";
 import { Field, inputClass, textareaClass, FormSelect } from "@/features/dashboard/form-field";
+import { postJobApi } from "@/lib/api/getApi";
+import { NewJobFormValues } from "@/type";
 
 /* -------------------------------------------------------------------------- */
 /* Data                                                                       */
 /* -------------------------------------------------------------------------- */
 
-export type NewJobFormValues = {
-  title: string;
-  company: string;
-  category: string;
-  jobType: string;
-  workplace: string;
-  location: string;
-  experienceLevel: string;
-  salaryMin: string;
-  salaryMax: string;
-  deadline: string;
-  description: string;
-  skills: string;
-};
+
 
 const CATEGORIES = ["Design", "Engineering", "Marketing", "Product", "Sales", "Other"];
 
@@ -61,6 +50,7 @@ const NewJobForm = () => {
   const onSubmit = async (data: NewJobFormValues) => {
     // getData → console
     console.log("New Job form data:", data);
+    await postJobApi(data); // Call the API to post the job
     reset();
   };
 
