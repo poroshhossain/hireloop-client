@@ -7,13 +7,11 @@ import {
   Eye,
   MapPin,
   Pause,
-  Pencil,
   Play,
   RotateCcw,
   Search,
   Send,
   SquarePlus,
-  Trash2,
 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -45,6 +43,10 @@ import {
   type JobPost,
   type JobStatus,
 } from "./jobs-data";
+import { deleteJobApi, editJobApi } from "@/lib/api/getApi";
+import { toast } from "@/components/ui/toast";
+import { DeleteDialog, DeleteMenuItem } from "./employerCompo/DeleteBtn";
+import { EditDialog, EditMenuItem } from "./employerCompo/EditBtn";
 
 /* -------------------------------------------------------------------------- */
 /* Manage Jobs                                                                */
@@ -99,9 +101,21 @@ const getPageNumbers = (current: number, total: number): (number | "ellipsis-sta
 /* JobRow — one row of the table                                              */
 /* -------------------------------------------------------------------------- */
 
-const JobRow = ({ job }: { job: JobPost }) => {
+const JobRow = ({
+  job,
+  onEdit,
+  onDelete,
+}: {
+  job: JobPost;
+  onEdit: (job: JobPost) => void;
+  onDelete: (job: JobPost) => void;
+}) => {
   const toggle = STATUS_TOGGLE[job.status];
   const ToggleIcon = toggle.icon;
+  // Dialog states. Both dialogs are rendered OUTSIDE <DropdownMenu> (below)
+  // so they survive the menu closing on click.
+  const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   return (
     <li
@@ -154,9 +168,7 @@ const JobRow = ({ job }: { job: JobPost }) => {
           <DropdownMenuItem onClick={() => { /* TODO: open job view */ }}>
             <Eye /> View
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => { /* TODO: open edit page */ }}>
-            <Pencil /> Edit
-          </DropdownMenuItem>
+          <EditMenuItem onClick={() => setEditOpen(true)} />
 
           <DropdownMenuSeparator />
 
@@ -168,15 +180,25 @@ const JobRow = ({ job }: { job: JobPost }) => {
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            variant="destructive"
-            onClick={() => { /* TODO: confirm, then delete */ }}
-          >
-            <Trash2 /> Delete
-          </DropdownMenuItem>
+          <DeleteMenuItem onClick={() => setDeleteOpen(true)} />
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* edit dialog — OUTSIDE the menu so it doesn't unmount with it */}
+      <EditDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        job={job}
+        onSave={onEdit}
+      />
+
+      {/* delete confirmation — OUTSIDE the menu so it doesn't unmount with it */}
+      <DeleteDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        job={job}
+        onConfirm={onDelete}
+      />
     </li>
   );
 };
@@ -218,6 +240,44 @@ const ManageJobs = ({ initialJobs = [] }: ManageJobsProps) => {
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE,
   );
+
+  /** Update a job via the API, then refresh it in the list. */
+  const editJob = async (job: JobPost) => {
+    try {
+      await editJobApi(job.id, job);
+      setJobs((prev) => prev.map((j) => (j.id === job.id ? job : j)));
+      toast.add({
+        type: "success",
+        title: "Job updated",
+        description: `“${job.title}” was saved.`,
+      });
+    } catch {
+      toast.add({
+        type: "error",
+        title: "Update failed",
+        description: "Could not save your changes. Please try again.",
+      });
+    }
+  };
+
+  /** Delete a job via the API, then remove it from the list. */
+  const deleteJob = async (job: JobPost) => {
+    try {
+      await deleteJobApi(job.id);
+      setJobs((prev) => prev.filter((j) => j.id !== job.id));
+      toast.add({
+        type: "success",
+        title: "Job deleted",
+        description: `“${job.title}” was removed.`,
+      });
+    } catch {
+      toast.add({
+        type: "error",
+        title: "Delete failed",
+        description: "Could not delete this job. Please try again.",
+      });
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -298,7 +358,12 @@ const ManageJobs = ({ initialJobs = [] }: ManageJobsProps) => {
             {/* rows */}
             <ul className="divide-y divide-border-color/10">
               {pagedJobs.map((job) => (
-                <JobRow key={job.id} job={job} />
+                <JobRow
+                  key={job.id}
+                  job={job}
+                  onEdit={editJob}
+                  onDelete={deleteJob}
+                />
               ))}
             </ul>
 

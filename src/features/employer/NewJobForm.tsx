@@ -9,22 +9,10 @@ import { toast } from "@/components/ui/toast";
 import { NewJobFormValues } from "@/type";
 
 /* -------------------------------------------------------------------------- */
-/* Data                                                                       */
-/* -------------------------------------------------------------------------- */
-
-
-
-const CATEGORIES = ["Design", "Engineering", "Marketing", "Product", "Sales", "Other"];
-
-const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
-
-const WORKPLACES = ["Remote", "On-site", "Hybrid"];
-
-const EXPERIENCE_LEVELS = ["Entry", "Mid", "Senior", "Lead"];
-
-/* -------------------------------------------------------------------------- */
 /* Form                                                                       */
 /* -------------------------------------------------------------------------- */
+
+import { CATEGORIES, EXPERIENCE_LEVELS, JOB_TYPES, WORKPLACES } from "./employerCompo/job-options";
 
 const NewJobForm = () => {
   const {

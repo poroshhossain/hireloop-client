@@ -34,3 +34,27 @@ export const getJobsApi = async () => {
 
   return response.json();
 };
+
+export const deleteJobApi = async (id: string) => {
+  const response = await fetch(`${jobsUrl}/${id}`, { method: "DELETE" });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete job (HTTP ${response.status})`);
+  }
+
+  return response.json();
+};
+
+export const editJobApi = async (id: string, data: NewJobFormValues) => {
+  const response = await fetch(`${jobsUrl}/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to update job (HTTP ${response.status})`);
+  }
+
+  return response.json();
+};
