@@ -2,19 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Bookmark,
-  Briefcase,
-  Building2,
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  SquarePlus,
-  Users,
-  Wallet,
-  type LucideIcon,
-} from "lucide-react";
+import { LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -31,86 +19,18 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import Logo from "@/components/sheard/Logo";
+import {
+  resolveRole,
+  roleHome,
+  sidebarsByRole,
+  type NavItem,
+} from "./nav";
 
 /* -------------------------------------------------------------------------- */
-/* Role-wise sidebar data                                                     */
+/* Sidebar                                                                    */
 /*                                                                            */
-/* Mirrors the "HL 2.0/Sidebar" Figma component — one spec for every role:    */
-/* brand + subtitle → nav → footer (CTA, user card, logout).                  */
+/* Data + helpers live in ./nav — this file is purely presentation.           */
 /* -------------------------------------------------------------------------- */
-
-type Role = "jobseeker" | "employer" | "admin";
-
-type NavItem = {
-  label: string;
-  href: string;
-  icon: LucideIcon;
-};
-
-/** Everything the sidebar renders, resolved once per role. */
-type RoleSidebar = {
-  /** Text under the brand logo. */
-  subtitle: string;
-  /** Role title shown on the user card. */
-  roleLabel: string;
-  items: NavItem[];
-  /** Primary footer action — omitted for roles without one (admin). */
-  cta?: NavItem;
-};
-
-const ROLES = ["jobseeker", "employer", "admin"] as const;
-
-const roleHome: Record<Role, string> = {
-  jobseeker: "/dashboard/jobseeker",
-  employer: "/dashboard/employer",
-  admin: "/dashboard/admin",
-};
-
-const sidebarsByRole: Record<Role, RoleSidebar> = {
-  jobseeker: {
-    subtitle: "Seeker Portal",
-    roleLabel: "Seeker",
-    cta: { label: "Post Resume", href: "/dashboard/seeker/resume", icon: SquarePlus },
-    items: [
-      { label: "Dashboard", href: roleHome.jobseeker, icon: LayoutDashboard },
-      { label: "Jobs", href: "/dashboard/seeker/jobs", icon: Briefcase },
-      { label: "Saved Jobs", href: "/dashboard/seeker/saved-jobs", icon: Bookmark },
-      { label: "Applications", href: "/dashboard/seeker/applications", icon: FileText },
-      { label: "Billing", href: "/dashboard/seeker/billing", icon: Wallet },
-      { label: "Settings", href: "/dashboard/seeker/settings", icon: Settings },
-    ],
-  },
-  employer: {
-    subtitle: "Recruiter Console",
-    roleLabel: "Recruiter",
-    cta: { label: "Post Job", href: "/dashboard/employer/jobs/new", icon: SquarePlus },
-    items: [
-      { label: "Dashboard", href: roleHome.employer, icon: LayoutDashboard },
-      { label: "My Company", href: "/dashboard/employer/company", icon: Building2 },
-      { label: "Manage Jobs", href: "/dashboard/employer/jobs", icon: Briefcase },
-      { label: "Applications", href: "/dashboard/employer/applications", icon: FileText },
-      { label: "Settings", href: "/dashboard/employer/settings", icon: Settings },
-    ],
-  },
-  admin: {
-    subtitle: "Admin Console",
-    roleLabel: "Admin",
-    items: [
-      { label: "Dashboard", href: roleHome.admin, icon: LayoutDashboard },
-      { label: "Users", href: "/dashboard/admin/users", icon: Users },
-      { label: "Companies", href: "/dashboard/admin/companies", icon: Building2 },
-      { label: "Jobs", href: "/dashboard/admin/jobs", icon: Briefcase },
-      { label: "Payments", href: "/dashboard/admin/payments", icon: Wallet },
-      { label: "Settings", href: "/dashboard/admin/settings", icon: Settings },
-    ],
-  },
-};
-
-/** Session roles may be absent or unexpected — fall back to the default. */
-const isRole = (value: unknown): value is Role =>
-  typeof value === "string" && ROLES.includes(value as Role);
-
-const resolveRole = (value: unknown): Role => (isRole(value) ? value : "jobseeker");
 
 /** "Alex Rivera" → "AR", used while there is no avatar image. */
 const initials = (name: string) =>
